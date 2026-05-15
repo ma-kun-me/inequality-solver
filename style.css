@@ -4,8 +4,8 @@
   --board-max-size: min(85vw, 70vh);
   
   /* 9x9マスのグリッド比率から計算した1マス・1隙間の黄金比 */
-  --cell-size: calc(var(--board-max-size) / 11.5);
-  --space-size: calc(var(--board-max-size) / 25);
+  --cell-size: calc(var(--board-max-size) / 12);
+  --space-size: calc(var(--board-max-size) / 36);
 }
 
 body {
@@ -69,6 +69,9 @@ header h1 {
   height: var(--cell-size);
   border: 1px solid #bbb;
   border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: calc(var(--cell-size) * 0.6); /* セルサイズに比例して数字も拡大 */
   font-weight: bold;
   text-align: center;
@@ -86,40 +89,18 @@ header h1 {
   color: #2196f3;
 }
 
-/* 3x3ブロックの右側と下側の区切り太線 */
-.cell.block-border-right {
-  border-right: 4px solid #222;
-}
-.cell.block-border-bottom {
-  border-bottom: 4px solid #222;
-}
-
 /* 【重要】不等号入力エリアの押しやすさ大幅改善 */
 .constraint {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(var(--space-size) * 0.9 + 6px); /* 記号を見やすく調整 */
-  font-weight: bold;
-  color: #444;
+  font-size: calc(var(--space-size) * 2.4); /* 記号を見やすく調整 */
+  font-family: 'Material Icons';
+  color: orange;
   cursor: pointer;
   user-select: none;
   background: rgba(0, 0, 0, 0.02); /* タップできる場所をうっすら可視化 */
   transition: background 0.1s;
-}
-
-/* 横方向(h)の不等号エリア：上下のセル幅いっぱいに高さを広げる */
-div[id^="h-"] {
-  height: var(--cell-size);
-  margin: 0 -2px; /* 左右のセルに少し被せて隙間をなくし、タップ領域を最大化 */
-  z-index: 1;
-}
-
-/* 縦方向(v)の不等号エリア：左右のセル幅いっぱいに幅を広げる */
-div[id^="v-"] {
-  width: var(--cell-size);
-  margin: -2px 0; /* 上下のセルに少し被せて隙間をなくし、タップ領域を最大化 */
-  z-index: 1;
 }
 
 .constraint:hover {
@@ -130,6 +111,7 @@ div[id^="v-"] {
 .controls {
   margin: 15px 0;
   display: flex;
+  justify-content: center;
   gap: 15px;
 }
 .btn {
@@ -148,15 +130,14 @@ div[id^="v-"] {
 .keypad {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
-  width: 90vw;
-  max-width: 600px;
+  gap: 1vw;
+  margin: 20px auto;
+  width: 85vw;
 }
 .key {
   flex: 1;
-  height: 55px;
-  font-size: 1.4rem;
+  height: 7vw;
+  font-size: 4vw;
   font-weight: bold;
   background: white;
   border: 1px solid #ccc;
@@ -165,7 +146,7 @@ div[id^="v-"] {
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 .key-clear {
-  flex: 1.5;
+  flex: 2.4;
   background: #ffebee;
   color: #c62828;
   border-color: #ffcdd2;
