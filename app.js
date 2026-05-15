@@ -42,9 +42,6 @@ function initBoard(newSize) {
         const el = document.createElement('div');
         el.className = 'cell';
         el.id = `cell-${cellIdx}`;
-        // カスタムデータ属性に行と列を記録しておく（太線判定用）
-        el.dataset.row = r / 2;
-        el.dataset.col = c / 2;
         el.addEventListener('click', () => selectCell(cellIdx));
         board.appendChild(el);
       } else if (isCellRow && !isCellCol) {
@@ -81,35 +78,6 @@ function initBoard(newSize) {
   clearBtn.dataset.val = 0;
   clearBtn.textContent = '消去';
   keypad.appendChild(clearBtn);
-
-  // 太線の描画状態を更新
-  updateBlockBorders();
-}
-
-// --- 3x3ブロックの区切り太線を動的に制御する関数 ---
-function updateBlockBorders() {
-  const useBlockRule = document.getElementById('use-block-rule').checked;
-  const cells = document.querySelectorAll('.cell');
-
-  cells.forEach(cell => {
-    // 一旦太線クラスをクリア
-    cell.classList.remove('block-border-right', 'block-border-bottom');
-
-    // 9x9かつブロックルール有効時のみ太線を付与
-    if (SIZE === 9 && useBlockRule) {
-      const row = parseInt(cell.dataset.row, 10);
-      const col = parseInt(cell.dataset.col, 10);
-
-      // 3マス目(インデックス2)と6マス目(インデックス5)の右側に太線
-      if (col === 2 || col === 5) {
-        cell.classList.add('block-border-right');
-      }
-      // 3マス目(インデックス2)と6マス目(インデックス5)の下側に太線
-      if (row === 2 || row === 5) {
-        cell.classList.add('block-border-bottom');
-      }
-    }
-  });
 }
 
 // --- UI操作イベント ---
@@ -143,10 +111,8 @@ document.getElementById('keypad').addEventListener('click', (e) => {
   el.classList.remove('solved');
 });
 
-// 設定変更イベントの監視
 document.getElementById('size-8').addEventListener('change', () => initBoard(8));
 document.getElementById('size-9').addEventListener('change', () => initBoard(9));
-document.getElementById('use-block-rule').addEventListener('change', updateBlockBorders);
 
 // --- バックトラッキング・ソルバー ---
 function isValid(board, r, c, val) {
