@@ -92,13 +92,13 @@ function selectCell(idx) {
 
 function toggleHConstraint(idx) {
   hConstraints[idx] = (hConstraints[idx] + 1) % 3;
-  const signs = ['', '<', '>'];
+  const signs = ['', 'keyboard_arrow_left', 'keyboard_arrow_right'];
   document.getElementById(`h-${idx}`).textContent = signs[hConstraints[idx]];
 }
 
 function toggleVConstraint(idx) {
   vConstraints[idx] = (vConstraints[idx] + 1) % 3;
-  const signs = ['', '∧', '∨'];
+  const signs = ['', 'keyboard_arrow_up', 'keyboard_arrow_down'];
   document.getElementById(`v-${idx}`).textContent = signs[vConstraints[idx]];
 }
 
