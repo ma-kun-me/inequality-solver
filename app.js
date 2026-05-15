@@ -1,5 +1,5 @@
 // --- 状態管理 ---
-let SIZE = 9; // デフォルトサイズ
+let SIZE = 9;
 let cellsData = [];
 let hConstraints = [];
 let vConstraints = [];
@@ -18,9 +18,16 @@ function initBoard(newSize) {
   vConstraints = Array((SIZE - 1) * SIZE).fill(0);
   selectedCellIndex = null;
 
+  // 8x8マスの時は、3x3ブロック判定の設定項目を非表示にする
+  const blockRuleContainer = document.getElementById('block-rule-container');
+  if (SIZE === 8) {
+    blockRuleContainer.classList.add('hidden');
+  } else {
+    blockRuleContainer.classList.remove('hidden');
+  }
+
   const board = document.getElementById('board');
   board.innerHTML = '';
-  // CSSのクラスを切り替えてグリッド数を制御
   board.className = `board size-${SIZE}`;
 
   const gridSize = SIZE * 2 - 1;
@@ -35,6 +42,9 @@ function initBoard(newSize) {
         const el = document.createElement('div');
         el.className = 'cell';
         el.id = `cell-${cellIdx}`;
+        // カスタムデータ属性に行と列を記録しておく（太線判定用）
+        el.dataset.row = r / 2;
+        el.dataset.col = c / 2;
         el.addEventListener('click', () => selectCell(cellIdx));
         board.appendChild(el);
       } else if (isCellRow && !isCellCol) {
@@ -57,7 +67,6 @@ function initBoard(newSize) {
     }
   }
 
-  // テンキーをサイズに合わせて動的生成
   const keypad = document.getElementById('keypad');
   keypad.innerHTML = '';
   for (let i = 1; i <= SIZE; i++) {
@@ -72,6 +81,35 @@ function initBoard(newSize) {
   clearBtn.dataset.val = 0;
   clearBtn.textContent = '消去';
   keypad.appendChild(clearBtn);
+
+  // 太線の描画状態を更新
+  updateBlockBorders();
+}
+
+// --- 3x3ブロックの区切り太線を動的に制御する関数 ---
+function updateBlockBorders() {
+  const useBlockRule = document.getElementById('use-block-rule').checked;
+  const cells = document.querySelectorAll('.cell');
+
+  cells.forEach(cell => {
+    // 一旦太線クラスをクリア
+    cell.classList.remove('block-border-right', 'block-border-bottom');
+
+    // 9x9かつブロックルール有効時のみ太線を付与
+    if (SIZE === 9 && useBlockRule) {
+      const row = parseInt(cell.dataset.row, 10);
+      const col = parseInt(cell.dataset.col, 10);
+
+      // 3マス目(インデックス2)と6マス目(インデックス5)の右側に太線
+      if (col === 2 || col === 5) {
+        cell.classList.add('block-border-right');
+      }
+      // 3マス目(インデックス2)と6マス目(インデックス5)の下側に太線
+      if (row === 2 || row === 5) {
+        cell.classList.add('block-border-bottom');
+      }
+    }
+  });
 }
 
 // --- UI操作イベント ---
@@ -96,7 +134,6 @@ function toggleVConstraint(idx) {
   document.getElementById(`v-${idx}`).textContent = signs[vConstraints[idx]];
 }
 
-// テンキー入力イベントの監視
 document.getElementById('keypad').addEventListener('click', (e) => {
   if (!e.target.classList.contains('key') || selectedCellIndex === null) return;
   const val = parseInt(e.target.dataset.val, 10);
@@ -106,9 +143,10 @@ document.getElementById('keypad').addEventListener('click', (e) => {
   el.classList.remove('solved');
 });
 
-// サイズ変更ラジオボタンのイベント
+// 設定変更イベントの監視
 document.getElementById('size-8').addEventListener('change', () => initBoard(8));
 document.getElementById('size-9').addEventListener('change', () => initBoard(9));
+document.getElementById('use-block-rule').addEventListener('change', updateBlockBorders);
 
 // --- バックトラッキング・ソルバー ---
 function isValid(board, r, c, val) {
@@ -118,7 +156,23 @@ function isValid(board, r, c, val) {
     if (board[i * SIZE + c] === val && i !== r) return false;
   }
 
-  // 2. 横方向の不等号チェック
+  // 2. 3x3ブロックの重複チェック（9x9かつチェックボックスONの時のみ動作）
+  const useBlockRule = document.getElementById('use-block-rule').checked;
+  if (SIZE === 9 && useBlockRule) {
+    const boxRowStart = Math.floor(r / 3) * 3;
+    const boxColStart = Math.floor(c / 3) * 3;
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        const curR = boxRowStart + i;
+        const curC = boxColStart + j;
+        if (board[curR * SIZE + curC] === val && (curR !== r || curC !== c)) {
+          return false;
+        }
+      }
+    }
+  }
+
+  // 3. 横方向の不等号チェック
   if (c < SIZE - 1) {
     const hIdx = r * (SIZE - 1) + c;
     const nextVal = board[r * SIZE + (c + 1)];
@@ -136,7 +190,7 @@ function isValid(board, r, c, val) {
     }
   }
 
-  // 3. 縦方向の不等号チェック
+  // 4. 縦方向の不等号チェック
   if (r < SIZE - 1) {
     const vIdx = r * SIZE + c;
     const nextVal = board[(r + 1) * SIZE + c];
@@ -194,6 +248,4 @@ document.getElementById('clear-btn').addEventListener('click', () => {
   initBoard(SIZE);
 });
 
-// アプリ起動時に初期化 (デフォルト9x9)
 initBoard(9);
-
