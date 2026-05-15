@@ -120,23 +120,6 @@ header h1 {
 }
 .key-clear { background: #ffebee; color: #c62828; }
 
-/* 3x3ブロックの右側の区切り太線 */
-.cell.block-border-right {
-  border-right: 3px solid #333;
-}
-
-/* 3x3ブロックの下側の区切り太線 */
-.cell.block-border-bottom {
-  border-bottom: 3px solid #333;
-}
-
-/* 選択されたセルや解決済みのセルの境界線が太線と被った時の微調整 */
-.cell.selected {
-  background: #e3f2fd;
-  border-color: #2196f3;
-  z-index: 1; /* 太線の上に配置 */
-}
-
 .rule-selector {
   margin-top: 8px;
   font-size: 0.9rem;
