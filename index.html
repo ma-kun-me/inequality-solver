@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>不等号ナンプレ</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4A90E2">
+</head>
+<body>
+  <header>
+    <h1>不等号ナンプレ ソルバー</h1>
+    <!-- サイズ切り替えスイッチを追加 -->
+    <div class="size-selector">
+      <label><input type="radio" name="board-size" value="8" id="size-8"> 8x8</label>
+      <label><input type="radio" name="board-size" value="9" id="size-9" checked> 9x9</label>
+    </div>
+  </header>
+
+  <main>
+    <div id="board" class="board"></div>
+
+    <div class="controls">
+      <button id="solve-btn" class="btn btn-primary">自動で解く</button>
+      <button id="clear-btn" class="btn btn-secondary">クリア</button>
+    </div>
+
+    <!-- テンキーエリア（JSで動的に書き換えます） -->
+    <div id="keypad" class="keypad"></div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
+

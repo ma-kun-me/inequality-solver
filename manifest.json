@@ -1,0 +1,17 @@
+{
+  "short_name": "不等号ナンプレ",
+  "name": "不等号ナンプレ・ソルバー",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#f5f7fa",
+  "theme_color": "#4A90E2",
+  "display": "standalone",
+  "orientation": "portrait"
+}
+
