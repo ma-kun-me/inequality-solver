@@ -11,10 +11,13 @@
 <body>
   <header>
     <h1>不等号ナンプレ ソルバー</h1>
-    <!-- サイズ切り替えスイッチを追加 -->
     <div class="size-selector">
       <label><input type="radio" name="board-size" value="8" id="size-8"> 8x8</label>
       <label><input type="radio" name="board-size" value="9" id="size-9" checked> 9x9</label>
+    </div>
+    <!-- 3x3ブロック判定のON/OFFスイッチを追加 -->
+    <div class="rule-selector" id="block-rule-container">
+      <label><input type="checkbox" id="use-block-rule" checked> 3x3ブロックの重複制限を有効にする</label>
     </div>
   </header>
 
@@ -26,11 +29,9 @@
       <button id="clear-btn" class="btn btn-secondary">クリア</button>
     </div>
 
-    <!-- テンキーエリア（JSで動的に書き換えます） -->
     <div id="keypad" class="keypad"></div>
   </main>
 
   <script src="app.js"></script>
 </body>
 </html>
-
