@@ -89,6 +89,17 @@ header h1 {
   color: #2196f3;
 }
 
+/* 3x3ブロック判定ONの時、上下左右の4ブロックのみ背景を薄いグレーにする */
+.board.size-9.block-active .cell.block-bg-alt {
+  background: #f0f0f0; /* 薄いグレー */
+}
+
+/* 斜め判定ONの時のピンク枠と背景 */
+.board.size-9.diagonal-active .cell.diagonal-cell {
+  border: 1px solid #ff4081;
+  background: #fff5f8; /* 斜めマス専用のうっすらピンク背景 */
+}
+
 /* 【重要】不等号入力エリアの押しやすさ大幅改善 */
 .constraint {
   display: flex;
