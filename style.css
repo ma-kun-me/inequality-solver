@@ -80,6 +80,17 @@ header h1 {
   background: #fff;
   box-sizing: border-box;
 }
+
+/* 3x3ブロック判定ONの時、上下左右の4ブロックのみ背景を薄いグレーにする */
+.board.size-9.block-active .cell.block-bg-alt {
+  background: #f0f0f0; /* 薄いグレー */
+}
+/* 斜め判定ONの時のピンク枠と背景 */
+.board.size-9.diagonal-active .cell.diagonal-cell {
+  border: 1px solid #ff4081;
+  background: #fff5f8; /* 斜めマス専用のうっすらピンク背景 */
+}
+
 .cell.selected {
   background: #e3f2fd;
   border: 3px solid #2196f3;
@@ -87,17 +98,6 @@ header h1 {
 }
 .cell.solved {
   color: #2196f3;
-}
-
-/* 3x3ブロック判定ONの時、上下左右の4ブロックのみ背景を薄いグレーにする */
-.board.size-9.block-active .cell.block-bg-alt {
-  background: #f0f0f0; /* 薄いグレー */
-}
-
-/* 斜め判定ONの時のピンク枠と背景 */
-.board.size-9.diagonal-active .cell.diagonal-cell {
-  border: 1px solid #ff4081;
-  background: #fff5f8; /* 斜めマス専用のうっすらピンク背景 */
 }
 
 /* 【重要】不等号入力エリアの押しやすさ大幅改善 */
@@ -112,10 +112,6 @@ header h1 {
   user-select: none;
   background: rgba(0, 0, 0, 0.02); /* タップできる場所をうっすら可視化 */
   transition: background 0.1s;
-}
-
-.constraint:hover {
-  background: #e0e0e0;
 }
 
 /* 操作ボタン */
