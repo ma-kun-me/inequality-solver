@@ -18,12 +18,15 @@ function initBoard(newSize) {
   vConstraints = Array((SIZE - 1) * SIZE).fill(0);
   selectedCellIndex = null;
 
-  // 8x8マスの時は、3x3ブロック判定の設定項目を非表示にする
+  // 8x8マスの時は、3x3ブロック判定と斜め判定の設定項目を非表示にする
   const blockRuleContainer = document.getElementById('block-rule-container');
+  const diagonalRuleContainer = document.getElementById('diagonal-rule-container');
   if (SIZE === 8) {
-    blockRuleContainer.classList.add('hidden');
+    if (blockRuleContainer) blockRuleContainer.classList.add('hidden');
+    if (diagonalRuleContainer) diagonalRuleContainer.classList.add('hidden');
   } else {
-    blockRuleContainer.classList.remove('hidden');
+    if (blockRuleContainer) blockRuleContainer.classList.remove('hidden');
+    if (diagonalRuleContainer) diagonalRuleContainer.classList.remove('hidden');
   }
 
   const board = document.getElementById('board');
@@ -39,9 +42,34 @@ function initBoard(newSize) {
 
       if (isCellRow && isCellCol) {
         const cellIdx = (r / 2) * SIZE + (c / 2);
+        const cellR = r / 2;
+        const cellC = c / 2;
+
         const el = document.createElement('div');
         el.className = 'cell';
         el.id = `cell-${cellIdx}`;
+
+        // 9x9マスの時、上下左右の4ブロックのみグレー対象にする
+        if (SIZE === 9) {
+          const blockR = Math.floor(cellR / 3); // 0, 1, 2
+          const blockC = Math.floor(cellC / 3); // 0, 1, 2
+          
+          // (0,1)=上, (1,0)=左, (1,2)=右, (2,1)=下 の4箇所を判定
+          const isCrossBlock = (blockR === 0 && blockC === 1) ||
+                               (blockR === 1 && blockC === 0) ||
+                               (blockR === 1 && blockC === 2) ||
+                               (blockR === 2 && blockC === 1);
+
+          if (isCrossBlock) {
+            el.classList.add('block-bg-alt');
+          }
+        }
+
+        // 斜め判定のクラス付与
+        if (SIZE === 9 && (cellR === cellC || cellR + cellC === SIZE - 1)) {
+          el.classList.add('diagonal-cell');
+        }
+
         el.addEventListener('click', () => selectCell(cellIdx));
         board.appendChild(el);
       } else if (isCellRow && !isCellCol) {
@@ -62,6 +90,22 @@ function initBoard(newSize) {
         board.appendChild(document.createElement('div'));
       }
     }
+  }
+
+  // ブロックルールの初期状態を盤面に反映
+  const useBlock = document.getElementById('use-block-rule');
+  if (useBlock && useBlock.checked && SIZE === 9) {
+    board.classList.add('block-active');
+  } else {
+    board.classList.remove('block-active');
+  }
+
+  // 対角線ルールの初期状態を盤面に反映
+  const useDiagonal = document.getElementById('use-diagonal-rule');
+  if (useDiagonal && useDiagonal.checked && SIZE === 9) {
+    board.classList.add('diagonal-active');
+  } else {
+    board.classList.remove('diagonal-active');
   }
 
   const keypad = document.getElementById('keypad');
@@ -138,7 +182,24 @@ function isValid(board, r, c, val) {
     }
   }
 
-  // 3. 横方向の不等号チェック
+  // 3. 斜め（対角線）の重複チェック（9x9かつチェックボックスONの時のみ動作）
+  const useDiagonalRule = document.getElementById('use-diagonal-rule').checked;
+  if (SIZE === 9 && useDiagonalRule) {
+    // 主対角線 (左上から右下)
+    if (r === c) {
+      for (let i = 0; i < SIZE; i++) {
+        if (board[i * SIZE + i] === val && i !== r) return false;
+      }
+    }
+    // 副対角線 (右上から左下)
+    if (r + c === SIZE - 1) {
+      for (let i = 0; i < SIZE; i++) {
+        if (board[i * SIZE + (SIZE - 1 - i)] === val && i !== r) return false;
+      }
+    }
+  }
+
+  // 4. 横方向の不等号チェック
   if (c < SIZE - 1) {
     const hIdx = r * (SIZE - 1) + c;
     const nextVal = board[r * SIZE + (c + 1)];
@@ -156,7 +217,7 @@ function isValid(board, r, c, val) {
     }
   }
 
-  // 4. 縦方向の不等号チェック
+  // 5. 縦方向の不等号チェック
   if (r < SIZE - 1) {
     const vIdx = r * SIZE + c;
     const nextVal = board[(r + 1) * SIZE + c];
@@ -212,6 +273,26 @@ document.getElementById('solve-btn').addEventListener('click', () => {
 
 document.getElementById('clear-btn').addEventListener('click', () => {
   initBoard(SIZE);
+});
+
+// ブロック重複チェックのスイッチ連動
+document.getElementById('use-block-rule').addEventListener('change', (e) => {
+  const board = document.getElementById('board');
+  if (SIZE === 9 && e.target.checked) {
+    board.classList.add('block-active');
+  } else {
+    board.classList.remove('block-active');
+  }
+});
+
+// 対角線重複チェックのスイッチ連動
+document.getElementById('use-diagonal-rule').addEventListener('change', (e) => {
+  const board = document.getElementById('board');
+  if (SIZE === 9 && e.target.checked) {
+    board.classList.add('diagonal-active');
+  } else {
+    board.classList.remove('diagonal-active');
+  }
 });
 
 initBoard(9);
